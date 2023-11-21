@@ -1,0 +1,121 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>Image Processing</title>
+</head>
+<style>
+    .container {
+        text-align: center;
+    }
+
+    .options {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .options button {
+        margin: 0 10px;
+    }
+</style>
+<body>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: right;
+        }
+        
+        .logout-button a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 12px;
+            border: 1px solid #fff;
+            border-radius: 4px;
+        }
+        
+        .logout-button a:hover {
+            background-color: #fff;
+            color: #333;
+        }
+    </style>        
+    
+    <div class="header">
+        <div class="logout-button">
+            <a href="{% url 'account:logout' %}">Logout</a>
+        </div>
+        <!-- Other header content goes here -->
+    </div>
+    
+<br><br><hr>
+        
+    </div>
+    <div class="container">
+        <h2>Processed Image</h2>
+        <img id ="processedImage" src="{{ image.image.url }}" alt="Processed Image" style="max-width: 100%;" width="700px" height = "700px"><br>
+
+        <br>
+        <h1><i>Predicted Age: {{ pred_age }}</h1><i><br>   <button  class="rounded-pill btn-primary btn-lg" onclick="downloadImage()">Download</button>
+        <br>
+        <div class="options "><br>
+            <button onclick="window.location='{% url 'webapp:perform_face_detection' image.id %}'" class="options btn-secondary btn-lg rounded-pill">Face Detection</button>
+
+            <button onclick="window.location='{% url 'webapp:perform_image_enhancement' image.id %}'" class="options btn-secondary btn-lg rounded-pill">Image Enhancement</button>
+
+            <button onclick="window.location.href='{% url 'webapp:perform_age_classification' image.id %}'" class="options btn-secondary btn-lg rounded-pill">Age Classification</button>
+            <br>
+        </div><br><br>
+        
+        {% comment %} {% if result %}
+            <h3>Face Detection Result:</h3>
+            <ul>
+                <li>Age: {{ result.age }}</li>
+            </ul>
+        {% endif %}
+
+        {% if error_message %}
+            <p>Error: {{ error_message }}</p>
+        {% endif %} {% endcomment %}
+    </div>
+    <script>
+        function downloadImage() {
+            // Get the processed image element
+            var processedImage = document.getElementById('processedImage');
+    
+            // Create a temporary canvas
+            var canvas = document.createElement('canvas');
+            var context = canvas.getContext('2d');
+    
+            // Set the canvas dimensions to match the image
+            canvas.width = processedImage.width;
+            canvas.height = processedImage.height;
+    
+            // Draw the image onto the canvas
+            context.drawImage(processedImage, 0, 0);
+    
+            // Convert the canvas content to a data URL
+            var dataURL = canvas.toDataURL('image/jpeg');
+    
+            // Create a temporary anchor element
+            var link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'processed_image.jpg';
+    
+            // Simulate a click on the anchor element to trigger the download
+            link.click();
+        }
+    </script>
+</body>
+</html>
