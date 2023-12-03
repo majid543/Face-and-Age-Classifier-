@@ -8,75 +8,104 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>Image Processing</title>
 </head>
-<style>
-    .container {
-        text-align: center;
-    }
 
-    .options {
-        display: flex;
-        justify-content: center;
-        margin-top: 10px;
-    }
-
-    .options button {
-        margin: 0 10px;
-    }
-</style>
 <body>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Montserrat', sans-serif; /* Applying a custom font */
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Make the body take the full height of the viewport */
         }
-        
-        .header {
-            background-color: #333;
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #processedImage {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border: 2px solid #3498db; /* Blue border */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #3498db; /* Blue text */
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .predicted-age {
+            font-size: 32px; /* Larger font size */
+            color: #27ae60; /* Green text */
+        }
+
+        .options {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .options button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .options .btn-primary {
+            background-color: #e74c3c; /* Red background */
             color: #fff;
-            padding: 10px;
-            text-align: right;
+            border: none;
         }
-        
-        .logout-button a {
+
+        .options .btn-secondary {
+            background-color: #2c3e50; /* Dark gray background */
             color: #fff;
-            text-decoration: none;
-            padding: 8px 12px;
-            border: 1px solid #fff;
-            border-radius: 4px;
+            border: none;
         }
-        
-        .logout-button a:hover {
-            background-color: #fff;
-            color: #333;
+
+        .options button:hover {
+            background-color: #34495e; /* Darker gray on hover */
         }
-    </style>        
-    
-    <div class="header">
-        <div class="logout-button">
-            <a href="{% url 'account:logout' %}">Logout</a>
-        </div>
-        <!-- Other header content goes here -->
-    </div>
-    
-<br><br><hr>
-        
-    </div>
+    </style>
+
+    <!-- Include the Montserrat font from Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+</head>
+<body>
     <div class="container">
         <h2>Processed Image</h2>
-        <img id ="processedImage" src="{{ image.image.url }}" alt="Processed Image" style="max-width: 100%;" width="700px" height = "700px"><br>
+        <img id="processedImage" src="{{ image.image.url }}" alt="Processed Image">
 
-        <br>
-        <h1><i>Predicted Age: {{ pred_age }}</h1><i><br>   <button  class="rounded-pill btn-primary btn-lg" onclick="downloadImage()">Download</button>
-        <br>
-        <div class="options "><br>
-            <button onclick="window.location='{% url 'webapp:perform_face_detection' image.id %}'" class="options btn-secondary btn-lg rounded-pill">Face Detection</button>
+        <br><br>
+        <h1 class="predicted-age"><i> {{ pred_age }}</i></h1>
+        <button class="rounded-pill btn-primary btn-lg" onclick="downloadImage()">Download</button>
 
-            <button onclick="window.location='{% url 'webapp:perform_image_enhancement' image.id %}'" class="options btn-secondary btn-lg rounded-pill">Image Enhancement</button>
+        <div class="options">
+            <button onclick="window.location='{% url 'webapp:perform_face_detection' image.id %}'" class="btn-secondary btn-lg rounded-pill">Face Detection</button>
 
-            <button onclick="window.location.href='{% url 'webapp:perform_age_classification' image.id %}'" class="options btn-secondary btn-lg rounded-pill">Age Classification</button>
-            <br>
-        </div><br><br>
+            <button onclick="window.location='{% url 'webapp:perform_image_enhancement' image.id %}'" class="btn-secondary btn-lg rounded-pill">Image Enhancement</button>
+
+            <button onclick="window.location.href='{% url 'webapp:perform_age_classification' image.id %}'" class="btn-secondary btn-lg rounded-pill">Age Classification</button>
+        </div>
+    </div>
+</body>
+</html>
+
+</body>
+</html>
         
         {% comment %} {% if result %}
             <h3>Face Detection Result:</h3>

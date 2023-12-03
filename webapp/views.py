@@ -75,7 +75,28 @@ def recognize_faces(image):
     return image
     
 
+def detect_and_crop_face(image_np):
+    # Load the pre-trained Haar Cascade face detector
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
+    # Convert the image to grayscale for face detection
+    gray_image = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
+
+    # Detect faces in the image
+    faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.3, minNeighbors=5)
+
+    if len(faces) > 0:
+        # Choose the first detected face
+        (x, y, w, h) = faces[0]
+
+        # Crop the image to include only the detected face
+        cropped_face = image_np[y:y+h, x:x+w]
+
+        return cropped_face
+    else:
+        # No faces detected, return a placeholder image or default image
+        # In this case, returning a black image as a placeholder
+        return np.zeros((50, 50, 3), dtype=np.uint8)
 
 
 import numpy as np
@@ -84,39 +105,46 @@ from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 import cv2
 # Function to preprocess input data
+import cv2
+import numpy as np
+from tensorflow.keras.models import load_model
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+# Assuming your model expects input images with shape (50, 50, 3)
 def preprocess_input_data(image):
     # Read the image
-    nparr = np.fromstring(image.image.read(), np.uint8)
-    img_np = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
-    
+    nparr = np.frombuffer(image.image.read(), np.uint8)
+    img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)  # Use cv2.IMREAD_COLOR for color images
+    img_np = detect_and_crop_face(img_np)
     # Resize the image to the model's input size
-    resized_image = cv2.resize(img_np, (128, 128))
+    resized_image = cv2.resize(img_np, (50, 50))
 
     # Normalize the pixel values to be in the range [0, 1]
     normalized_image = resized_image / 255.0
 
     # Add an extra dimension to simulate batch size of 1
-    input_data = np.expand_dims(normalized_image, axis=-1)
+    input_data = np.expand_dims(normalized_image, axis=0)
 
     return input_data
 
-
 def classify_image(image):
-    model = load_model('complete_model.h5')
+    model = load_model('model_age.hdf5')
 
-# Example image (replace with the path to your image file)
-# Load and preprocess the image
-    image = preprocess_input_data(image)
+    # Preprocess the image
+    input_data = preprocess_input_data(image)
 
-# Ensure the input data has the correct shape
-    input_data = np.expand_dims(image, axis=0)  # Add batch dimension if necessary
-# Perform inference
+    # Perform inference
     predictions = model.predict(input_data)
 
-    pred_age = round(predictions[1][0][0])
-# Print the predicted gender and age
-    return pred_age
+    # Assuming predictions[0] contains age predictions
+    pred_age = round(predictions[0][0])
 
+    # Print the predicted age
+    print("Predicted Age:", pred_age )
+    if pred_age == 83:
+        return "NO FACE DETECTED Try Providing with Clearer Image of Face "
+    else:
+        return "Predicted Age: {}".format(pred_age)
 
 def perform_face_detection(request, image_id):
     image = Image.objects.get(pk=image_id)

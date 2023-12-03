@@ -9,57 +9,107 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>Image Upload</title>
-</head>
-<body>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Image Upload</title>
         
-        .header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: right;
-        }
-        
-        .logout-button a {
-            color: #fff;
-            text-decoration: none;
-            padding: 8px 12px;
-            border: 1px solid #fff;
-            border-radius: 4px;
-        }
-        
-        .logout-button a:hover {
-            background-color: #fff;
-            color: #333;
-        }
-    </style>        
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Roboto', sans-serif;
+                background-color: #f8f9fa;
+            }
     
-    <div class="header">
-        <div class="logout-button">
-            <a href="{% url 'account:logout' %}">Logout</a>
+            .header {
+                background-color: #343a40; /* Dark gray background */
+                color: #fff;
+                padding: 10px;
+                text-align: right;
+            }
+    
+            .logout-button a {
+                color: #fff;
+                text-decoration: none;
+                padding: 8px 12px;
+                border: 1px solid #fff;
+                border-radius: 4px;
+            }
+    
+            .logout-button a:hover {
+                background-color: #fff;
+                color: #343a40; /* Dark gray text on hover */
+            }
+    
+            .container {
+                margin: 50px auto;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+    
+            h2 {
+                color: #343a40;
+            }
+    
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+    
+            input[type="file"] {
+                margin: 20px 0;
+            }
+    
+            button {
+                background-color: #007bff; /* Blue button */
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+    
+            button:hover {
+                background-color: #0056b3; /* Darker blue on hover */
+            }
+    
+            .processed-images-link {
+                text-decoration: none;
+                color: #007bff; /* Blue link */
+                font-size: 18px;
+            }
+    
+            .processed-images-link:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="logout-button">
+                <a href="{% url 'account:logout' %}">Logout</a>
+            </div>
         </div>
-        <!-- Other header content goes here -->
-    </div>
     
-        <!-- Other header content goes here -->
-    </div>
-    <hr>
+        <hr>
     
-    <div class ="container">
-        <br><br><br><br>
-    <h2 >Upload Image</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class = " btn-lg rounded-pill">Upload</button>
-    </form>
-    <br><br>
-    <h2 class =''><a href="{% url 'webapp:image_display' %}">PROCESSED IMAGES</a></h2>
-</dir>
-</body>
+        <div class="container">
+            <br><br><br><br>
+            <h2>Upload Image</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Upload</button>
+            </form>
+            <br><br>
+            <h2><a href="{% url 'webapp:image_display' %}" class="processed-images-link">PROCESSED IMAGES</a></h2>
+        </div>
+    </body>
+    </html>
 </html>
